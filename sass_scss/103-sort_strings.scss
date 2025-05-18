@@ -1,0 +1,51 @@
+// Define a function to insert an element at position n in list
+@function insert-nth($list, $index, $value) {
+    $result: ();
+    $limit: length($list) + 1;
+    @for $i from 1 through $limit {
+        @if $i==$index {
+            $result: append($result, $value);
+        }
+        @if $i <=length($list) {
+            $result: append($result, nth($list, $i));
+        }
+    }
+    @return $result;
+}
+
+$list_to_sort: john,
+anna,
+zoe,
+kim,
+felicia,
+carrie;
+@function sort-list($list) {
+    $sorted-list: ();
+    @for $i from 1 through length($list) {
+        $current-item: nth($list, $i);
+        $inserted: false;
+        @if length($sorted-list)==0 {
+            $sorted-list: append($sorted-list, $current-item);
+        }
+        @else {
+            @for $j from 1 through length($sorted-list) {
+                $existing-item: nth($sorted-list, $j);
+                // compare lex order
+                @if $current-item < $existing-item {
+                    $sorted-list: insert-nth($sorted-list, $j, $current-item);
+                    $inserted: true;
+                    // simulate break by setting $j to a value that ends the loop
+                    $j: length($sorted-list);
+                }
+            }
+            // if not inserted, append to end
+            @if not $inserted {
+                $sorted-list: append($sorted-list, $current-item);
+            }
+        }
+    }
+    @return $sorted-list;
+}
+
+$sorted-list: sort-list($list_to_sort);
+@debug $sorted-list; // Should output the sorted list
